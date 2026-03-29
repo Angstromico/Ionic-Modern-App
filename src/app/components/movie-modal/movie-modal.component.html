@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Movie Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (movie) {
+    <div class="movie-container">
+      <!-- Movie Poster and Basic Info -->
+      <div class="movie-header">
+        <div class="poster-container">
+          <img
+            [src]="movie.poster_path"
+            [alt]="movie.title"
+            class="movie-poster"
+          />
+          <div class="rating-badge">
+            <ion-icon name="star"></ion-icon>
+            {{ movie.vote_average.toFixed(1) }}
+          </div>
+        </div>
+        <div class="movie-info">
+          <h1 class="movie-title">{{ movie.title }}</h1>
+          @if (movie.release_date) {
+            <p class="release-date">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ formatDate(movie.release_date) }}
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Overview -->
+      @if (movie.overview) {
+        <div class="overview-section">
+          <h2>Overview</h2>
+          <p class="overview">{{ movie.overview }}</p>
+        </div>
+      }
+
+      <!-- Additional Details -->
+      <div class="details-grid">
+        @if (movie.original_language) {
+          <div class="detail-item">
+            <ion-icon name="language-outline"></ion-icon>
+            <div>
+              <span class="detail-label">Language</span>
+              <span class="detail-value">{{
+                movie.original_language.toUpperCase()
+              }}</span>
+            </div>
+          </div>
+        }
+        @if (movie.vote_count) {
+          <div class="detail-item">
+            <ion-icon name="people-outline"></ion-icon>
+            <div>
+              <span class="detail-label">Vote Count</span>
+              <span class="detail-value">{{
+                movie.vote_count.toLocaleString()
+              }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Action Button -->
+      <div class="action-section">
+        <ion-button
+          expand="block"
+          fill="solid"
+          color="primary"
+          (click)="goToMovieDetails()"
+          class="details-btn"
+        >
+          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+          View Full Details
+        </ion-button>
+      </div>
+    </div>
+  } @else {
+    <div class="no-movie">
+      <ion-icon name="film-outline"></ion-icon>
+      <p>No movie information available</p>
+    </div>
+  }
+</ion-content>

@@ -1,0 +1,151 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Movie Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (isLoading) {
+  <div class="loading-container">
+    <ion-icon name="film-outline" class="loading-icon"></ion-icon>
+    <p>Loading movie details...</p>
+  </div>
+  } @else if (error) {
+  <div class="error-container">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <p>{{ error }}</p>
+    <ion-button fill="outline" (click)="goBack()">Go Back</ion-button>
+  </div>
+  } @else if (movie) {
+  <div class="movie-container">
+    <!-- Movie Poster and Basic Info -->
+    <div class="movie-header">
+      <div class="poster-container">
+        <img
+          [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+          [alt]="movie.title"
+          class="movie-poster"
+        />
+        <div class="rating-badge">
+          <ion-icon name="star"></ion-icon>
+          {{ movie.vote_average.toFixed(1) }}
+        </div>
+      </div>
+      <div class="movie-info">
+        <h1 class="movie-title">{{ movie.title }}</h1>
+        <h2 class="original-title">{{ movie.original_title }}</h2>
+        @if (movie.release_date) {
+        <p class="release-date">
+          <ion-icon name="calendar-outline"></ion-icon>
+          {{ formatDate(movie.release_date) }}
+        </p>
+        }
+        <div class="movie-meta">
+          <span class="adult-rating">
+            <ion-icon [name]="movie.adult ? 'warning-outline' : 'checkmark-circle-outline'"></ion-icon>
+            {{ movie.adult ? 'Adult' : 'All Ages' }}
+          </span>
+          <span class="popularity">
+            <ion-icon name="trending-up-outline"></ion-icon>
+            {{ movie.popularity.toFixed(1) }}
+          </span>
+          @if (movie.video) {
+          <span class="video-indicator">
+            <ion-icon name="videocam-outline"></ion-icon>
+            Video
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Overview -->
+    @if (movie.overview) {
+    <div class="overview-section">
+      <h2>Overview</h2>
+      <p class="overview">{{ movie.overview }}</p>
+    </div>
+    }
+
+    <!-- Additional Details -->
+    <div class="details-grid">
+      <div class="detail-item">
+        <ion-icon name="film-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Movie ID</span>
+          <span class="detail-value">{{ movie.id }}</span>
+        </div>
+      </div>
+      
+      @if (movie.original_language) {
+      <div class="detail-item">
+        <ion-icon name="language-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Original Language</span>
+          <span class="detail-value"
+            >{{ movie.original_language.toUpperCase() }}</span
+          >
+        </div>
+      </div>
+      }
+      
+      <div class="detail-item">
+        <ion-icon name="star-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Rating</span>
+          <span class="detail-value">{{ movie.vote_average.toFixed(2) }}/10</span>
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <ion-icon name="people-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Vote Count</span>
+          <span class="detail-value"
+            >{{ movie.vote_count.toLocaleString() }}</span
+          >
+        </div>
+      </div>
+      
+      <div class="detail-item">
+        <ion-icon name="trending-up-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Popularity</span>
+          <span class="detail-value">{{ movie.popularity.toFixed(2) }}</span>
+        </div>
+      </div>
+      
+      @if (movie.backdrop_path) {
+      <div class="detail-item">
+        <ion-icon name="image-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Backdrop Available</span>
+          <span class="detail-value">Yes</span>
+        </div>
+      </div>
+      }
+      
+      <div class="detail-item">
+        <ion-icon name="shield-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Content Rating</span>
+          <span class="detail-value">{{ movie.adult ? 'Adult Content' : 'General Audience' }}</span>
+        </div>
+      </div>
+      
+      @if (movie.genre_ids && movie.genre_ids.length > 0) {
+      <div class="detail-item">
+        <ion-icon name="grid-outline"></ion-icon>
+        <div>
+          <span class="detail-label">Genre IDs</span>
+          <span class="detail-value">{{ movie.genre_ids.join(', ') }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</ion-content>

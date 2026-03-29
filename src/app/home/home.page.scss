@@ -138,3 +138,21 @@ app-movie-list {
     color: var(--ion-color-light);
   }
 }
+
+// Modal styles
+.movie-modal {
+  --background: rgba(0, 0, 0, 0.8);
+  --backdrop-opacity: 0.8;
+  
+  ion-modal {
+    --background: transparent;
+  }
+  
+  .modal-wrapper {
+    background: var(--ion-background-color);
+    border-radius: 20px;
+    margin: 20px;
+    max-height: 80vh;
+    overflow: auto;
+  }
+}

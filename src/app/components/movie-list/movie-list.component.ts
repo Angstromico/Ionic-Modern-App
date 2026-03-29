@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {
   IonList,
   IonItem,
@@ -13,11 +13,15 @@ import type { IMovieDetails } from '../../services/interfaces';
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.scss'],
   imports: [IonList, IonItem, IonBadge, IonLabel, IonIcon],
+  standalone: true,
 })
-export class MovieListComponent implements OnInit {
+export class MovieListComponent {
   @Input() movies: IMovieDetails[] = [];
+  @Output() movieClick = new EventEmitter<IMovieDetails>();
 
   constructor() {}
 
-  ngOnInit() {}
+  onMovieClick(movie: IMovieDetails) {
+    this.movieClick.emit(movie);
+  }
 }

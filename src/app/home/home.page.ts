@@ -1,4 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular/standalone';
 import {
   type InfiniteScrollCustomEvent,
   IonContent,
@@ -11,6 +13,7 @@ import type { IMovieDetails } from '../services/interfaces';
 import { catchError, finalize } from 'rxjs';
 import { MovieListComponent } from '../components/movie-list/movie-list.component';
 import { PaginationComponent } from '../components/pagination/pagination.component';
+import { MovieModalComponent } from '../components/movie-modal/movie-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -24,9 +27,12 @@ import { PaginationComponent } from '../components/pagination/pagination.compone
     MovieListComponent,
     PaginationComponent,
   ],
+  providers: [ModalController],
 })
 export class HomePage {
   private movieService = inject(Movies);
+  private router = inject(Router);
+  private modalController = inject(ModalController);
   public currentPage = signal(1);
   public totalPages = signal(0);
   public error = signal<string | null>(null);
@@ -128,5 +134,23 @@ export class HomePage {
   onPageChange(newPage: number) {
     this.currentPage.set(newPage);
     this.loadMovies();
+  }
+
+  async openMovieModal(movie: IMovieDetails) {
+    const modal = await this.modalController.create({
+      component: MovieModalComponent,
+      componentProps: {
+        movie: movie,
+      },
+      cssClass: 'movie-modal',
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+
+    if (data?.action === 'navigate' && data?.movieId) {
+      this.router.navigate(['/movie', data.movieId]);
+    }
   }
 }

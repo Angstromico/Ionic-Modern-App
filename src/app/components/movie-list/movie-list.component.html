@@ -1,6 +1,6 @@
 <ion-list lines="none" class="movie-list">
   @for (movie of movies; track movie.id) {
-    <ion-item class="movie-item" button detail="false">
+    <ion-item class="movie-item" button detail="false" (click)="onMovieClick(movie)">
       <div class="poster-container" slot="start">
         <img [src]="movie.poster_path" alt="{{ movie.title }}" loading="lazy" />
         <ion-badge color="warning">{{ movie.vote_average }}</ion-badge>
