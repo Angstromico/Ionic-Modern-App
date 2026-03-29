@@ -4,13 +4,9 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonList,
-  IonSkeletonText,
   type InfiniteScrollCustomEvent,
-  IonItem,
-  IonAvatar,
-  IonLabel,
 } from '@ionic/angular/standalone';
+import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
 import { Movies } from '../services/movies';
 import type { IMovieDetails } from '../services/interfaces';
 import { catchError, finalize } from 'rxjs';
@@ -20,15 +16,11 @@ import { catchError, finalize } from 'rxjs';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    IonAvatar,
-    IonItem,
     IonHeader,
     IonToolbar,
     IonTitle,
     IonContent,
-    IonList,
-    IonSkeletonText,
-    IonLabel,
+    LoadingSkeletonComponent,
   ],
 })
 export class HomePage {
@@ -38,7 +30,6 @@ export class HomePage {
   public isLoading = signal(false);
   private movies = signal<IMovieDetails[]>([]);
   public imageBaseUrl = 'https://image.tmdb.org/t/p';
-  public dummyArray = Array(5);
 
   constructor() {
     this.loadMovies();

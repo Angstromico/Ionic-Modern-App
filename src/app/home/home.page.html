@@ -6,22 +6,6 @@
 
 <ion-content [fullscreen]="true">
   @if (isLoading()) {
-  <ion-list>
-    @for (item of dummyArray; track $index) {
-    <ion-item>
-      <ion-avatar slot="start">
-        <ion-skeleton-text animated></ion-skeleton-text>
-      </ion-avatar>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
-    }
-  </ion-list>
+  <app-loading-skeleton></app-loading-skeleton>
   }
 </ion-content>
