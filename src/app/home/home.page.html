@@ -6,13 +6,10 @@
 
 <ion-content [fullscreen]="true">
   @if (isLoading()) {
-  <app-loading-skeleton></app-loading-skeleton>
+  <app-loading-skeleton />
   } @else if (error()) {
-  <app-error-banner
-    [errorMessage]="error()"
-    [retry]="loadMovies"
-  ></app-error-banner>
+  <app-error-banner [errorMessage]="error()" [retry]="loadMovies" />
   } @else {
-  <app-movie-list [movies]="movies()"></app-movie-list>
+  <app-movie-list [movies]="movies()" />
   }
 </ion-content>
