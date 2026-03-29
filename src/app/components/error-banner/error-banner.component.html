@@ -1,0 +1,18 @@
+<div class="modal-overlay">
+  <div class="error-card">
+    <div class="icon-container">
+      <ion-icon name="alert-circle"></ion-icon>
+    </div>
+
+    <div class="error-content">
+      <strong>Conection Error</strong>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <div class="action-area">
+      <ion-button expand="block" (click)="retry()" class="retry-button">
+        Try Again
+      </ion-button>
+    </div>
+  </div>
+</div>

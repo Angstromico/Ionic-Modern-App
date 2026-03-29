@@ -7,11 +7,10 @@ import {
   IonList,
   IonLabel,
   IonItem,
-  IonIcon,
-  IonButton,
   type InfiniteScrollCustomEvent,
 } from '@ionic/angular/standalone';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
+import { ErrorBannerComponent } from '../components/error-banner/error-banner.component';
 import { Movies } from '../services/movies';
 import type { IMovieDetails } from '../services/interfaces';
 import { catchError, finalize } from 'rxjs';
@@ -29,8 +28,7 @@ import { catchError, finalize } from 'rxjs';
     IonList,
     IonLabel,
     IonItem,
-    IonIcon,
-    IonButton,
+    ErrorBannerComponent,
   ],
 })
 export class HomePage {
@@ -52,7 +50,7 @@ export class HomePage {
       .getTopRatedMovies(this.currentPage())
       .subscribe((movies) => {
         console.log(movies);
-        this.error.set(null);
+        this.error.set('Test Error Message');
         this.movies.set(
           movies.results.map((movie) => ({
             ...movie,

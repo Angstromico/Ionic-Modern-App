@@ -8,16 +8,10 @@
   @if (isLoading()) {
   <app-loading-skeleton></app-loading-skeleton>
   } @else if (error()) {
-  <div class="error-banner">
-    <ion-icon name="alert-circle-outline"></ion-icon>
-    <div class="error-content">
-      <strong>¡Ups! Something went wrong!</strong>
-      <p>{{ error() }}</p>
-    </div>
-    <ion-button fill="clear" color="light" (click)="loadMovies()">
-      Try Again
-    </ion-button>
-  </div>
+  <app-error-banner
+    [errorMessage]="error()"
+    [retry]="loadMovies"
+  ></app-error-banner>
   } @else {
   <ion-list>
     @for (movie of movies(); track movie.id) {
