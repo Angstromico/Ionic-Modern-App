@@ -1,11 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
   type InfiniteScrollCustomEvent,
+  IonContent,
 } from '@ionic/angular/standalone';
+import { MainHeaderComponent } from '../components/main-header/main-header.component';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
 import { ErrorBannerComponent } from '../components/error-banner/error-banner.component';
 import { Movies } from '../services/movies';
@@ -18,10 +16,8 @@ import { MovieListComponent } from '../components/movie-list/movie-list.componen
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
+    MainHeaderComponent,
     LoadingSkeletonComponent,
     ErrorBannerComponent,
     MovieListComponent,
