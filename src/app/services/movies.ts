@@ -15,8 +15,8 @@ export class Movies {
 
   constructor() {}
 
-  getTopRatedMovies(page = 1): Observable<IMovie[]> {
-    return this.http.get<IMovie[]>(
+  getTopRatedMovies(page = 1): Observable<IMovie> {
+    return this.http.get<IMovie>(
       `${BASE_URL}/movie/popular?page=${page}&api_key=${API_KEY}`,
     );
   }
