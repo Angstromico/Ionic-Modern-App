@@ -4,7 +4,12 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonList,
+  IonSkeletonText,
   type InfiniteScrollCustomEvent,
+  IonItem,
+  IonAvatar,
+  IonLabel,
 } from '@ionic/angular/standalone';
 import { Movies } from '../services/movies';
 import type { IMovieDetails } from '../services/interfaces';
@@ -14,15 +19,26 @@ import { catchError, finalize } from 'rxjs';
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [
+    IonAvatar,
+    IonItem,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonList,
+    IonSkeletonText,
+    IonLabel,
+  ],
 })
 export class HomePage {
   private movieService = inject(Movies);
   private currentPage = signal(1);
   private error = signal<string | null>(null);
-  private isLoading = signal(false);
+  public isLoading = signal(false);
   private movies = signal<IMovieDetails[]>([]);
   public imageBaseUrl = 'https://image.tmdb.org/t/p';
+  public dummyArray = Array(5);
 
   constructor() {
     this.loadMovies();
@@ -46,15 +62,18 @@ export class HomePage {
   }
 
   loadMovieDetails(movieId: number) {
+    this.isLoading.set(true);
     this.movieService.getMovieDetails(movieId).subscribe((details) => {
       console.log(details);
+      this.isLoading.set(false);
     });
   }
 
   loadMoreMovies(event?: InfiniteScrollCustomEvent) {
-    if (!event) {
-      this.isLoading.set(true);
-    }
+    // if (!event) {
+    //   this.isLoading.set(true);
+    // }
+    this.isLoading.set(true);
 
     this.movieService
       .getTopRatedMovies(this.currentPage())
