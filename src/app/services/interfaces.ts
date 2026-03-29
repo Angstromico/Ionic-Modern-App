@@ -21,3 +21,10 @@ export interface IMovieDetails {
   vote_average: number;
   vote_count: number;
 }
+
+export interface ApiResult {
+  page: number;
+  results: IMovieDetails[];
+  total_pages: number;
+  total_results: number;
+}
