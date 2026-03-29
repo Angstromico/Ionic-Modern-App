@@ -1,0 +1,26 @@
+<div class="pagination-container">
+  <ion-button 
+    [disabled]="!hasPreviousPage || isLoading" 
+    fill="outline" 
+    size="small"
+    (click)="previousPage()"
+    class="pagination-btn">
+    <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
+    Previous
+  </ion-button>
+  
+  <div class="page-info">
+    <span class="page-number">Page {{ currentPage }}</span>
+    <span class="total-pages">of {{ totalPages }}</span>
+  </div>
+  
+  <ion-button 
+    [disabled]="!hasNextPage || isLoading" 
+    fill="outline" 
+    size="small"
+    (click)="nextPage()"
+    class="pagination-btn">
+    Next
+    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+  </ion-button>
+</div>

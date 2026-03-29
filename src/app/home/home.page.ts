@@ -2,8 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import {
   type InfiniteScrollCustomEvent,
   IonContent,
-  IonButton,
-  IonIcon,
 } from '@ionic/angular/standalone';
 import { MainHeaderComponent } from '../components/main-header/main-header.component';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
@@ -12,6 +10,7 @@ import { Movies } from '../services/movies';
 import type { IMovieDetails } from '../services/interfaces';
 import { catchError, finalize } from 'rxjs';
 import { MovieListComponent } from '../components/movie-list/movie-list.component';
+import { PaginationComponent } from '../components/pagination/pagination.component';
 
 @Component({
   selector: 'app-home',
@@ -19,18 +18,17 @@ import { MovieListComponent } from '../components/movie-list/movie-list.componen
   styleUrls: ['home.page.scss'],
   imports: [
     IonContent,
-    IonButton,
-    IonIcon,
     MainHeaderComponent,
     LoadingSkeletonComponent,
     ErrorBannerComponent,
     MovieListComponent,
+    PaginationComponent,
   ],
 })
 export class HomePage {
   private movieService = inject(Movies);
   public currentPage = signal(1);
-  private totalPages = signal(0);
+  public totalPages = signal(0);
   public error = signal<string | null>(null);
   public isLoading = signal(false);
   public movies = signal<IMovieDetails[]>([]);
@@ -129,5 +127,10 @@ export class HomePage {
 
   hasMorePages() {
     return this.currentPage() < this.totalPages();
+  }
+
+  onPageChange(newPage: number) {
+    this.currentPage.set(newPage);
+    this.loadMovies();
   }
 }

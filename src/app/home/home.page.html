@@ -8,31 +8,11 @@
   } @else {
   <app-movie-list [movies]="movies()" />
   
-  <!-- Pagination Controls -->
-  <div class="pagination-container">
-    <ion-button 
-      [disabled]="currentPage() <= 1" 
-      fill="outline" 
-      size="small"
-      (click)="previousPage()"
-      class="pagination-btn">
-      <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
-      Previous
-    </ion-button>
-    
-    <div class="page-info">
-      <span class="page-number">Page {{ currentPage() }}</span>
-    </div>
-    
-    <ion-button 
-      [disabled]="!hasMorePages()" 
-      fill="outline" 
-      size="small"
-      (click)="nextPage()"
-      class="pagination-btn">
-      Next
-      <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
-    </ion-button>
-  </div>
+  <!-- Pagination Component -->
+  <app-pagination 
+    [currentPage]="currentPage()" 
+    [totalPages]="totalPages()" 
+    [isLoading]="isLoading()"
+    (pageChange)="onPageChange($event)" />
   }
 </ion-content>
