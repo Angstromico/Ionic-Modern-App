@@ -7,12 +7,12 @@
   <app-error-banner [errorMessage]="error()" [retry]="loadMovies" />
   } @else {
   <app-movie-list [movies]="movies()" />
-  
-  <!-- Pagination Component -->
-  <app-pagination 
-    [currentPage]="currentPage()" 
-    [totalPages]="totalPages()" 
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
     [isLoading]="isLoading()"
-    (pageChange)="onPageChange($event)" />
+    (pageChange)="onPageChange($event)"
+  />
   }
 </ion-content>
