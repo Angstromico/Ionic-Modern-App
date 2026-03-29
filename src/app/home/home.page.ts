@@ -4,18 +4,14 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonList,
-  IonLabel,
-  IonItem,
   type InfiniteScrollCustomEvent,
-  IonIcon,
-  IonBadge,
 } from '@ionic/angular/standalone';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
 import { ErrorBannerComponent } from '../components/error-banner/error-banner.component';
 import { Movies } from '../services/movies';
 import type { IMovieDetails } from '../services/interfaces';
 import { catchError, finalize } from 'rxjs';
+import { MovieListComponent } from '../components/movie-list/movie-list.component';
 
 @Component({
   selector: 'app-home',
@@ -27,12 +23,8 @@ import { catchError, finalize } from 'rxjs';
     IonTitle,
     IonContent,
     LoadingSkeletonComponent,
-    IonList,
-    IonLabel,
-    IonItem,
     ErrorBannerComponent,
-    IonIcon,
-    IonBadge,
+    MovieListComponent,
   ],
 })
 export class HomePage {

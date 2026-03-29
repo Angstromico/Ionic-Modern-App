@@ -13,24 +13,6 @@
     [retry]="loadMovies"
   ></app-error-banner>
   } @else {
-  <ion-list lines="none" class="movie-list">
-    @for (movie of movies(); track movie.id) {
-    <ion-item class="movie-item" button detail="false">
-      <div class="poster-container" slot="start">
-        <img [src]="movie.poster_path" alt="{{ movie.title }}" loading="lazy" />
-        <ion-badge color="warning">{{ movie.vote_average }}</ion-badge>
-      </div>
-
-      <ion-label>
-        <h2 class="movie-title">{{ movie.title }}</h2>
-        <p class="movie-meta">
-          <ion-icon name="calendar-outline"></ion-icon>
-          {{ movie.release_date }}
-        </p>
-        <p class="movie-overview">{{ movie.overview }}</p>
-      </ion-label>
-    </ion-item>
-    }
-  </ion-list>
+  <app-movie-list [movies]="movies()"></app-movie-list>
   }
 </ion-content>
