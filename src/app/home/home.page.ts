@@ -4,6 +4,11 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonList,
+  IonLabel,
+  IonItem,
+  IonIcon,
+  IonButton,
   type InfiniteScrollCustomEvent,
 } from '@ionic/angular/standalone';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
@@ -21,14 +26,19 @@ import { catchError, finalize } from 'rxjs';
     IonTitle,
     IonContent,
     LoadingSkeletonComponent,
+    IonList,
+    IonLabel,
+    IonItem,
+    IonIcon,
+    IonButton,
   ],
 })
 export class HomePage {
   private movieService = inject(Movies);
   private currentPage = signal(1);
-  private error = signal<string | null>(null);
+  public error = signal<string | null>(null);
   public isLoading = signal(false);
-  private movies = signal<IMovieDetails[]>([]);
+  public movies = signal<IMovieDetails[]>([]);
   public imageBaseUrl = 'https://image.tmdb.org/t/p';
 
   constructor() {

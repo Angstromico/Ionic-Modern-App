@@ -25,3 +25,48 @@
 #container a {
   text-decoration: none;
 }
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px;
+  background: rgba(235, 68, 90, 0.15); // Un rojo suave
+  border: 1px solid var(--ion-color-danger);
+  border-radius: 12px;
+  text-align: left;
+  backdrop-filter: blur(10px);
+
+  ion-icon {
+    font-size: 32px;
+    color: var(--ion-color-danger);
+    flex-shrink: 0;
+  }
+
+  .error-content {
+    flex-grow: 1;
+
+    strong {
+      display: block;
+      font-size: 16px;
+      color: var(--ion-color-danger);
+      margin-bottom: 4px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--ion-color-step-700, #555);
+      margin: 0;
+    }
+  }
+
+  ion-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-weight: bold;
+    text-transform: none;
+    margin: 0;
+    color: var(--ion-color-danger);
+  }
+}
