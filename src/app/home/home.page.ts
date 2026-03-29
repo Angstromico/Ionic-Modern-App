@@ -2,6 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import {
   type InfiniteScrollCustomEvent,
   IonContent,
+  IonButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 import { MainHeaderComponent } from '../components/main-header/main-header.component';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
@@ -17,6 +19,8 @@ import { MovieListComponent } from '../components/movie-list/movie-list.componen
   styleUrls: ['home.page.scss'],
   imports: [
     IonContent,
+    IonButton,
+    IonIcon,
     MainHeaderComponent,
     LoadingSkeletonComponent,
     ErrorBannerComponent,
@@ -25,7 +29,8 @@ import { MovieListComponent } from '../components/movie-list/movie-list.componen
 })
 export class HomePage {
   private movieService = inject(Movies);
-  private currentPage = signal(1);
+  public currentPage = signal(1);
+  private totalPages = signal(0);
   public error = signal<string | null>(null);
   public isLoading = signal(false);
   public movies = signal<IMovieDetails[]>([]);
@@ -38,13 +43,25 @@ export class HomePage {
   }
 
   loadMovies() {
+    this.isLoading.set(true);
     this.movieService
       .getTopRatedMovies(this.currentPage())
-      .subscribe((movies) => {
-        console.log(movies);
+      .pipe(
+        finalize(() => this.isLoading.set(false)),
+        catchError((err) => {
+          this.error.set(
+            `Failed to load movies. Please try again. Error: ${err.message}`,
+          );
+          this.movies.set([]);
+          return [];
+        }),
+      )
+      .subscribe((response) => {
+        console.log(response);
         this.error.set(null);
+        this.totalPages.set(response.total_pages);
         this.movies.set(
-          movies.results.map((movie) => ({
+          response.results.map((movie) => ({
             ...movie,
             poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
           })),
@@ -61,9 +78,6 @@ export class HomePage {
   }
 
   loadMoreMovies(event?: InfiniteScrollCustomEvent) {
-    // if (!event) {
-    //   this.isLoading.set(true);
-    // }
     this.isLoading.set(true);
 
     this.movieService
@@ -84,20 +98,36 @@ export class HomePage {
           return [];
         }),
       )
-      .subscribe((movies) => {
-        console.log(movies);
-        next: (res: any) => {
-          console.log(res);
-          this.movies.set(
-            movies.results.map((movie) => ({
-              ...movie,
-              poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
-            })),
-          );
-          if (event) {
-            event.target.disabled = res.total_pages === this.currentPage();
-          }
-        };
+      .subscribe((response) => {
+        console.log(response);
+        this.totalPages.set(response.total_pages);
+        this.movies.set(
+          response.results.map((movie) => ({
+            ...movie,
+            poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
+          })),
+        );
+        if (event) {
+          event.target.disabled = response.total_pages === this.currentPage();
+        }
       });
+  }
+
+  nextPage() {
+    if (this.hasMorePages()) {
+      this.currentPage.set(this.currentPage() + 1);
+      this.loadMovies();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+      this.loadMovies();
+    }
+  }
+
+  hasMorePages() {
+    return this.currentPage() < this.totalPages();
   }
 }
