@@ -18,11 +18,18 @@ export class HomePage {
 
   constructor() {
     this.loadMovies();
+    this.loadMovieDetails(550); // Example movie ID for "Fight Club"
   }
 
   loadMovies() {
     this.movieService.getTopRatedMovies().subscribe((movies) => {
       console.log(movies);
+    });
+  }
+
+  loadMovieDetails(movieId: number) {
+    this.movieService.getMovieDetails(movieId).subscribe((details) => {
+      console.log(details);
     });
   }
 }
