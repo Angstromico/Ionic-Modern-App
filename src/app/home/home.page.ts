@@ -50,7 +50,7 @@ export class HomePage {
       .getTopRatedMovies(this.currentPage())
       .subscribe((movies) => {
         console.log(movies);
-        this.error.set('Test Error Message');
+        this.error.set(null);
         this.movies.set(
           movies.results.map((movie) => ({
             ...movie,
