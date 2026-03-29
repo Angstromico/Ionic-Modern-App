@@ -8,6 +8,8 @@ import {
   IonLabel,
   IonItem,
   type InfiniteScrollCustomEvent,
+  IonIcon,
+  IonBadge,
 } from '@ionic/angular/standalone';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
 import { ErrorBannerComponent } from '../components/error-banner/error-banner.component';
@@ -29,6 +31,8 @@ import { catchError, finalize } from 'rxjs';
     IonLabel,
     IonItem,
     ErrorBannerComponent,
+    IonIcon,
+    IonBadge,
   ],
 })
 export class HomePage {
