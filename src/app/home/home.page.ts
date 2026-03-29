@@ -36,7 +36,6 @@ export class HomePage {
 
   constructor() {
     this.loadMovies();
-    this.loadMovieDetails(550); // Example movie ID for "Fight Club"
     this.loadMoreMovies();
   }
 
@@ -55,7 +54,6 @@ export class HomePage {
         }),
       )
       .subscribe((response) => {
-        console.log(response);
         this.error.set(null);
         this.totalPages.set(response.total_pages);
         this.movies.set(
@@ -70,7 +68,6 @@ export class HomePage {
   loadMovieDetails(movieId: number) {
     this.isLoading.set(true);
     this.movieService.getMovieDetails(movieId).subscribe((details) => {
-      console.log(details);
       this.isLoading.set(false);
     });
   }
@@ -97,7 +94,6 @@ export class HomePage {
         }),
       )
       .subscribe((response) => {
-        console.log(response);
         this.totalPages.set(response.total_pages);
         this.movies.set(
           response.results.map((movie) => ({
