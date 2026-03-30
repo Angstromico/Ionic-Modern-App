@@ -7,8 +7,7 @@
   <app-error-banner [errorMessage]="error()" [retry]="loadMovies" />
   } @else {
   <app-movie-list [movies]="movies()" (movieClick)="openMovieModal($event)" />
-  
-  <!-- Pagination Component -->
+
   <app-pagination
     [currentPage]="currentPage()"
     [totalPages]="totalPages()"
