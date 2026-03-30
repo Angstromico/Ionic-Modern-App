@@ -42,7 +42,6 @@ export class HomePage {
 
   constructor() {
     this.loadMovies();
-    this.loadMoreMovies();
   }
 
   loadMovies() {
