@@ -8,6 +8,8 @@
   } @else {
   <app-movie-list [movies]="movies()" (movieClick)="openMovieModal($event)" />
 
+  <!-- Pagination Component (shown when pagination mode is active) -->
+  @if (usePagination()) {
   <app-pagination
     [currentPage]="currentPage()"
     [totalPages]="totalPages()"
@@ -15,4 +17,26 @@
     (pageChange)="onPageChange($event)"
   />
   }
+  
+  <!-- Infinite Scroll (shown when infinite scroll mode is active) -->
+  @if (!usePagination()) {
+  <ion-infinite-scroll (ionInfinite)="loadMoreMovies($event)">
+    <ion-spinner name="dots"></ion-spinner>
+  </ion-infinite-scroll>
+  }
+  }
+  
+  <!-- Toggle Button -->
+  <div class="toggle-container">
+    <ion-button 
+      [color]="usePagination() ? 'primary' : 'medium'"
+      fill="solid"
+      shape="round"
+      size="small"
+      (click)="togglePaginationMode()"
+      class="toggle-btn">
+      <ion-icon [name]="usePagination() ? 'infinite-outline' : 'grid-outline'" slot="start"></ion-icon>
+      {{ usePagination() ? 'Infinite Scroll' : 'Pagination' }}
+    </ion-button>
+  </div>
 </ion-content>

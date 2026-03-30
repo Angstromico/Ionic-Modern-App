@@ -4,6 +4,10 @@ import { ModalController } from '@ionic/angular/standalone';
 import {
   type InfiniteScrollCustomEvent,
   IonContent,
+  IonInfiniteScroll,
+  IonSpinner,
+  IonButton,
+  IonIcon,
 } from '@ionic/angular/standalone';
 import { MainHeaderComponent } from '../components/main-header/main-header.component';
 import { LoadingSkeletonComponent } from '../components/loading-skeleton/loading-skeleton.component';
@@ -21,11 +25,16 @@ import { MovieModalComponent } from '../components/movie-modal/movie-modal.compo
   styleUrls: ['home.page.scss'],
   imports: [
     IonContent,
+    IonInfiniteScroll,
+    IonSpinner,
+    IonButton,
+    IonIcon,
     MainHeaderComponent,
     LoadingSkeletonComponent,
     ErrorBannerComponent,
     MovieListComponent,
     PaginationComponent,
+    MovieModalComponent,
   ],
   providers: [ModalController],
 })
@@ -39,6 +48,8 @@ export class HomePage {
   public isLoading = signal(false);
   public movies = signal<IMovieDetails[]>([]);
   public imageBaseUrl = 'https://image.tmdb.org/t/p';
+  public usePagination = signal(true); // Toggle between pagination and infinite scroll
+  private allMovies = signal<IMovieDetails[]>([]); // For infinite scroll accumulation
 
   constructor() {
     this.loadMovies();
@@ -55,18 +66,40 @@ export class HomePage {
             `Failed to load movies. Please try again. Error: ${err.message}`,
           );
           this.movies.set([]);
+          this.allMovies.set([]);
           return [];
         }),
       )
       .subscribe((response) => {
         this.error.set(null);
         this.totalPages.set(response.total_pages);
-        this.movies.set(
-          response.results.map((movie) => ({
+        
+        if (this.usePagination()) {
+          // Pagination mode: replace movies
+          this.movies.set(
+            response.results.map((movie) => ({
+              ...movie,
+              poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
+            })),
+          );
+        } else {
+          // Infinite scroll mode: accumulate movies
+          const newMovies = response.results.map((movie) => ({
             ...movie,
             poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
-          })),
-        );
+          }));
+          
+          if (this.currentPage() === 1) {
+            // First load - replace all movies
+            this.allMovies.set(newMovies);
+            this.movies.set(newMovies);
+          } else {
+            // Subsequent loads - append movies
+            const currentMovies = this.allMovies();
+            this.allMovies.set([...currentMovies, ...newMovies]);
+            this.movies.set(this.allMovies());
+          }
+        }
       });
   }
 
@@ -78,38 +111,86 @@ export class HomePage {
   }
 
   loadMoreMovies(event?: InfiniteScrollCustomEvent) {
-    this.isLoading.set(true);
+    if (this.usePagination()) {
+      // Original pagination behavior
+      this.isLoading.set(true);
 
-    this.movieService
-      .getTopRatedMovies(this.currentPage())
-      .pipe(
-        finalize(() => {
-          if (event) {
-            event.target.complete();
-            event.target.disabled = false;
-          }
-          this.isLoading.set(false);
-        }),
-        catchError((err) => {
-          this.error.set(
-            `Failed to load movies. Please try again. Error: ${err.message}`,
+      this.movieService
+        .getTopRatedMovies(this.currentPage())
+        .pipe(
+          finalize(() => {
+            if (event) {
+              event.target.complete();
+              event.target.disabled = false;
+            }
+            this.isLoading.set(false);
+          }),
+          catchError((err) => {
+            this.error.set(
+              `Failed to load movies. Please try again. Error: ${err.message}`,
+            );
+            this.movies.set([]);
+            return [];
+          }),
+        )
+        .subscribe((response) => {
+          this.totalPages.set(response.total_pages);
+          this.movies.set(
+            response.results.map((movie) => ({
+              ...movie,
+              poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
+            })),
           );
-          this.movies.set([]);
-          return [];
-        }),
-      )
-      .subscribe((response) => {
-        this.totalPages.set(response.total_pages);
-        this.movies.set(
-          response.results.map((movie) => ({
+          if (event) {
+            event.target.disabled = response.total_pages === this.currentPage();
+          }
+        });
+    } else {
+      // Infinite scroll behavior
+      if (this.currentPage() >= this.totalPages()) {
+        if (event) {
+          event.target.complete();
+          event.target.disabled = true;
+        }
+        return;
+      }
+
+      this.currentPage.set(this.currentPage() + 1);
+      
+      this.movieService
+        .getTopRatedMovies(this.currentPage())
+        .pipe(
+          finalize(() => {
+            if (event) {
+              event.target.complete();
+            }
+          }),
+          catchError((err) => {
+            this.error.set(
+              `Failed to load more movies. Error: ${err.message}`,
+            );
+            if (event) {
+              event.target.complete();
+            }
+            return [];
+          }),
+        )
+        .subscribe((response) => {
+          this.totalPages.set(response.total_pages);
+          const newMovies = response.results.map((movie) => ({
             ...movie,
             poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
-          })),
-        );
-        if (event) {
-          event.target.disabled = response.total_pages === this.currentPage();
-        }
-      });
+          }));
+          
+          const currentMovies = this.allMovies();
+          this.allMovies.set([...currentMovies, ...newMovies]);
+          this.movies.set(this.allMovies());
+          
+          if (event) {
+            event.target.disabled = this.currentPage() >= response.total_pages;
+          }
+        });
+    }
   }
 
   nextPage() {
@@ -139,17 +220,29 @@ export class HomePage {
     const modal = await this.modalController.create({
       component: MovieModalComponent,
       componentProps: {
-        movie: movie,
+        movie: movie
       },
-      cssClass: 'movie-modal',
+      cssClass: 'movie-modal'
     });
 
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-
+    
     if (data?.action === 'navigate' && data?.movieId) {
       this.router.navigate(['/movie', data.movieId]);
     }
+  }
+
+  togglePaginationMode() {
+    const newMode = !this.usePagination();
+    this.usePagination.set(newMode);
+    
+    // Reset to first page when switching modes
+    this.currentPage.set(1);
+    this.allMovies.set([]);
+    
+    // Reload movies for the new mode
+    this.loadMovies();
   }
 }
