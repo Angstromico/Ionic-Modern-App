@@ -34,7 +34,6 @@ import { MovieModalComponent } from '../components/movie-modal/movie-modal.compo
     ErrorBannerComponent,
     MovieListComponent,
     PaginationComponent,
-    MovieModalComponent,
   ],
   providers: [ModalController],
 })
@@ -73,7 +72,7 @@ export class HomePage {
       .subscribe((response) => {
         this.error.set(null);
         this.totalPages.set(response.total_pages);
-        
+
         if (this.usePagination()) {
           // Pagination mode: replace movies
           this.movies.set(
@@ -88,7 +87,7 @@ export class HomePage {
             ...movie,
             poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
           }));
-          
+
           if (this.currentPage() === 1) {
             // First load - replace all movies
             this.allMovies.set(newMovies);
@@ -156,7 +155,7 @@ export class HomePage {
       }
 
       this.currentPage.set(this.currentPage() + 1);
-      
+
       this.movieService
         .getTopRatedMovies(this.currentPage())
         .pipe(
@@ -166,9 +165,7 @@ export class HomePage {
             }
           }),
           catchError((err) => {
-            this.error.set(
-              `Failed to load more movies. Error: ${err.message}`,
-            );
+            this.error.set(`Failed to load more movies. Error: ${err.message}`);
             if (event) {
               event.target.complete();
             }
@@ -181,11 +178,11 @@ export class HomePage {
             ...movie,
             poster_path: `${this.imageBaseUrl}/w500${movie.poster_path}`,
           }));
-          
+
           const currentMovies = this.allMovies();
           this.allMovies.set([...currentMovies, ...newMovies]);
           this.movies.set(this.allMovies());
-          
+
           if (event) {
             event.target.disabled = this.currentPage() >= response.total_pages;
           }
@@ -220,15 +217,15 @@ export class HomePage {
     const modal = await this.modalController.create({
       component: MovieModalComponent,
       componentProps: {
-        movie: movie
+        movie: movie,
       },
-      cssClass: 'movie-modal'
+      cssClass: 'movie-modal',
     });
 
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    
+
     if (data?.action === 'navigate' && data?.movieId) {
       this.router.navigate(['/movie', data.movieId]);
     }
@@ -237,11 +234,11 @@ export class HomePage {
   togglePaginationMode() {
     const newMode = !this.usePagination();
     this.usePagination.set(newMode);
-    
+
     // Reset to first page when switching modes
     this.currentPage.set(1);
     this.allMovies.set([]);
-    
+
     // Reload movies for the new mode
     this.loadMovies();
   }
